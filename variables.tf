@@ -58,6 +58,7 @@ variable "custom_cdn_policies" {
   type = map(object({
     cache_mode       = optional(string, null)
     client_ttl       = optional(number, null)
+    default_ttl      = optional(number, null)
     max_ttl          = optional(number, null)
     negative_caching = optional(bool, null)
     negative_caching_policy = optional(map(object({

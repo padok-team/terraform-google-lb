@@ -8,6 +8,14 @@ provider "google" {
   region = "europe-west1"
 }
 
+resource "google_compute_managed_ssl_certificate" "this" {
+  name    = "playground-tls"
+  project = local.project_id
+  managed {
+    domains = ["frontend-library.playground.padok.cloud", "www.frontend-library.playground.padok.cloud"]
+  }
+}
+
 module "multi_backend_lb" {
   source = "../.."
 
@@ -22,7 +30,7 @@ module "multi_backend_lb" {
           paths = ["/*"]
         }
       ]
-      bucket_name = "padok-helm-library"
+      bucket_name = google_storage_bucket.this.name
     }
   }
   service_backends = {
@@ -36,7 +44,7 @@ module "multi_backend_lb" {
       groups = [google_compute_region_network_endpoint_group.backend.id]
     }
   }
-  ssl_certificates    = []
+  ssl_certificates    = [google_compute_managed_ssl_certificate.this.id]
   custom_cdn_policies = {}
 }
 
@@ -51,3 +59,13 @@ resource "google_compute_region_network_endpoint_group" "backend" {
   }
 }
 
+resource "google_storage_bucket" "this" {
+  name     = "example-custom-certificate"
+  project  = local.project_id
+  location = "EU"
+
+  website {
+    main_page_suffix = "index.html"
+    not_found_page   = "index.html"
+  }
+}

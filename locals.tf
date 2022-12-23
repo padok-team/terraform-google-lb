@@ -2,6 +2,7 @@ locals {
   embedded_cdn_policies = {
     react = {
       cache_mode       = "USE_ORIGIN_HEADERS"
+      default_ttl      = 3600
       negative_caching = true
       negative_caching_policy = {
         "404" = {

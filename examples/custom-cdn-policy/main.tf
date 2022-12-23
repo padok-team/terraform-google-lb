@@ -1,19 +1,16 @@
 # Short description of the use case in comments
-
 provider "google" {
-  region  = "europe-west1"
-  project = "padok-cloud-factory"
+  region = "europe-west1"
 }
-
-data "google_project" "this" {}
 
 locals {
   domain_name = "googlelb.padok.cloud"
+  project_id  = "padok-cloud-factory"
 }
 
 # --- Generate Certificate --- #
 resource "google_compute_managed_ssl_certificate" "this" {
-  project = data.google_project.this.project_id
+  project = local.project_id
 
   name = replace(local.domain_name, ".", "-")
   managed {
@@ -25,7 +22,7 @@ module "custom_cdn_policy_lb" {
   source = "../.."
 
   name       = "lb-library"
-  project_id = data.google_project.this.project_id
+  project_id = local.project_id
 
   buckets_backends = {
     frontend = {
@@ -71,7 +68,7 @@ module "custom_cdn_policy_lb" {
 
 resource "google_compute_region_network_endpoint_group" "backend" {
   name                  = "network-backend"
-  project               = data.google_project.this.project_id
+  project               = local.project_id
   region                = "europe-west1"
   network_endpoint_type = "SERVERLESS"
   cloud_run {
