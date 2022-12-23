@@ -185,19 +185,19 @@ resource "google_compute_backend_bucket" "this" {
   dynamic "cdn_policy" {
     for_each = (each.value.cdn_policy == null ? false : true) ? { default = each.value.cdn_policy } : {}
     content {
-      cache_mode                   = try(local.cdn_policies[cdn_policy.value].cache_mode, null)
-      client_ttl                   = try(local.cdn_policies[cdn_policy.value].client_ttl, null)
-      default_ttl                  = try(local.cdn_policies[cdn_policy.value].default_ttl, null)
-      max_ttl                      = try(local.cdn_policies[cdn_policy.value].max_ttl, null)
-      negative_caching             = try(local.cdn_policies[cdn_policy.value].negative_caching, null)
-      serve_while_stale            = try(local.cdn_policies[cdn_policy.value].serve_while_stale, null)
-      signed_url_cache_max_age_sec = try(local.cdn_policies[cdn_policy.value].signed_url_cache_max_age_sec, null)
+      cache_mode                   = local.cdn_policies[cdn_policy.value].cache_mode
+      client_ttl                   = local.cdn_policies[cdn_policy.value].client_ttl
+      default_ttl                  = local.cdn_policies[cdn_policy.value].default_ttl
+      max_ttl                      = local.cdn_policies[cdn_policy.value].max_ttl
+      negative_caching             = local.cdn_policies[cdn_policy.value].negative_caching
+      serve_while_stale            = local.cdn_policies[cdn_policy.value].serve_while_stale
+      signed_url_cache_max_age_sec = local.cdn_policies[cdn_policy.value].signed_url_cache_max_age_sec
 
       dynamic "negative_caching_policy" {
         for_each = local.cdn_policies[cdn_policy.value].negative_caching_policy
         content {
-          code = try(negative_caching_policy.value.code, null)
-          ttl  = try(negative_caching_policy.value.ttl, null)
+          code = negative_caching_policy.value.code
+          ttl  = negative_caching_policy.value.ttl
         }
       }
     }

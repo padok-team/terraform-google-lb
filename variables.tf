@@ -56,17 +56,16 @@ variable "service_backends" {
 variable "custom_cdn_policies" {
   description = "A map of additional custom CDN policies you can add to the load balancer."
   type = map(object({
-    cache_mode       = optional(string)
-    client_ttl       = optional(number)
-    default_ttl      = optional(number)
-    max_ttl          = optional(number)
-    negative_caching = optional(bool)
+    cache_mode       = optional(string, null)
+    client_ttl       = optional(number, null)
+    max_ttl          = optional(number, null)
+    negative_caching = optional(bool, null)
     negative_caching_policy = optional(map(object({
-      code = optional(number)
-      ttl  = optional(number)
-    })))
-    serve_while_stale            = optional(number)
-    signed_url_cache_max_age_sec = optional(number)
+      code = optional(number, null)
+      ttl  = optional(number, null)
+    })), null)
+    serve_while_stale            = optional(number, null)
+    signed_url_cache_max_age_sec = optional(number, null)
   }))
   default = {}
 }
