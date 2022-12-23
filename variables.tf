@@ -1,9 +1,3 @@
-terraform {
-  # Optional attributes and the defaults function are
-  # both experimental, so we must opt in to the experiment.
-  experiments = [module_variable_optional_attrs]
-}
-
 variable "project_id" {
   description = "The project to deploy the ressources to."
   type        = string
@@ -33,11 +27,6 @@ variable "ssl_certificates" {
   description = "A list of SSL certificates for the load balancer."
   type        = list(string)
   default     = []
-
-  validation {
-    condition     = length(var.ssl_certificates) > 0
-    error_message = "The ssl_certificates variable must contain at least 1 certificate."
-  }
 }
 
 variable "buckets_backends" {

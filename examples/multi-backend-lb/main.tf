@@ -1,18 +1,18 @@
 # Short description of the use case in comments
 
-provider "google" {
-  region = "europe-west1"
+locals {
+  project_id = "padok-cloud-factory"
 }
 
-data "google_compute_ssl_certificate" "playground" {
-  name = "playground-tls"
+provider "google" {
+  region = "europe-west1"
 }
 
 module "multi_backend_lb" {
   source = "../.."
 
   name       = "lb-library"
-  project_id = "padok-cloud-factory"
+  project_id = local.project_id
 
   buckets_backends = {
     frontend = {
@@ -36,13 +36,13 @@ module "multi_backend_lb" {
       groups = [google_compute_region_network_endpoint_group.backend.id]
     }
   }
-  ssl_certificates    = [data.google_compute_ssl_certificate.playground.self_link]
+  ssl_certificates    = []
   custom_cdn_policies = {}
 }
 
 resource "google_compute_region_network_endpoint_group" "backend" {
   name    = "network-backend"
-  project = "padok-cloud-factory"
+  project = local.project_id
 
   region                = "europe-west1"
   network_endpoint_type = "SERVERLESS"
