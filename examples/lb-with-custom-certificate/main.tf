@@ -1,12 +1,12 @@
 # This example creates a SSL certificate and attach it to e new load balancer
 
 provider "google" {
-  project = "padok-playground"
-  region  = "europe-west1"
+  region = "europe-west1"
 }
 
 resource "google_compute_managed_ssl_certificate" "this" {
-  name = "playground-tls"
+  name    = "playground-tls"
+  project = "padok-playground"
   managed {
     domains = ["frontend-library.playground.padok.cloud", "www.frontend-library.playground.padok.cloud"]
   }
@@ -15,7 +15,9 @@ resource "google_compute_managed_ssl_certificate" "this" {
 module "my_lb" {
   source = "../.."
 
-  name = "my-lb"
+  name       = "my-lb"
+  project_id = "padok-playground"
+
   buckets_backends = {
     frontend = {
       hosts = ["frontend-library.playground.padok.cloud", "www.frontend-library.playground.padok.cloud"]

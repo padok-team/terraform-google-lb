@@ -1,8 +1,7 @@
 # Short description of the use case in comments
 
 provider "google" {
-  project = "padok-cloud-factory"
-  region  = "europe-west1"
+  region = "europe-west1"
 }
 
 data "google_compute_ssl_certificate" "playground" {
@@ -12,7 +11,9 @@ data "google_compute_ssl_certificate" "playground" {
 module "custom_cdn_policy_lb" {
   source = "../.."
 
-  name = "lb-library"
+  name       = "lb-library"
+  project_id = "padok-cloud-factory"
+
   buckets_backends = {
     frontend = {
       hosts = ["frontend-library.playground.padok.cloud"]
@@ -57,6 +58,7 @@ module "custom_cdn_policy_lb" {
 
 resource "google_compute_region_network_endpoint_group" "backend" {
   name                  = "network-backend"
+  project               = "padok-cloud-factory"
   region                = "europe-west1"
   network_endpoint_type = "SERVERLESS"
   cloud_run {

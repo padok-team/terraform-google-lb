@@ -1,11 +1,13 @@
 resource "google_compute_global_address" "this" {
   count      = var.ip_address == "" ? 1 : 0
+  project    = var.project_id
   name       = var.name
   ip_version = "IPV4"
 }
 
 resource "google_compute_url_map" "https" {
-  name = "${var.name}-https"
+  name    = "${var.name}-https"
+  project = var.project_id
 
   default_service = try(google_compute_backend_bucket.this[keys(google_compute_backend_bucket.this)[0]].self_link, google_compute_backend_service.this[keys(google_compute_backend_service.this)[0]].self_link)
 
@@ -61,7 +63,8 @@ resource "google_compute_url_map" "https" {
 }
 
 resource "google_compute_url_map" "http" {
-  name = "${var.name}-http"
+  name    = "${var.name}-http"
+  project = var.project_id
 
   default_url_redirect {
     redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
@@ -71,13 +74,17 @@ resource "google_compute_url_map" "http" {
 }
 
 resource "google_compute_ssl_policy" "this" {
-  name            = var.name
+  name    = var.name
+  project = var.project_id
+
   min_tls_version = "TLS_1_2"
   profile         = "RESTRICTED"
 }
 
 resource "google_compute_target_https_proxy" "this" {
-  name             = "${var.name}-https"
+  name    = "${var.name}-https"
+  project = var.project_id
+
   url_map          = google_compute_url_map.https.self_link
   ssl_certificates = var.ssl_certificates
   ssl_policy       = google_compute_ssl_policy.this.self_link
@@ -85,18 +92,24 @@ resource "google_compute_target_https_proxy" "this" {
 
 resource "google_compute_target_http_proxy" "this" {
   name    = "${var.name}-http"
+  project = var.project_id
+
   url_map = google_compute_url_map.http.self_link
 }
 
 resource "google_compute_global_forwarding_rule" "https" {
-  name       = "${var.name}-https"
+  name    = "${var.name}-https"
+  project = var.project_id
+
   target     = google_compute_target_https_proxy.this.self_link
   ip_address = local.ip_address
   port_range = 443
 }
 
 resource "google_compute_global_forwarding_rule" "http" {
-  name       = "${var.name}-http"
+  name    = "${var.name}-http"
+  project = var.project_id
+
   target     = google_compute_target_http_proxy.this.self_link
   ip_address = local.ip_address
   port_range = 80
@@ -125,7 +138,9 @@ resource "random_id" "backend_service" {
 resource "google_compute_backend_service" "this" {
   for_each = var.service_backends
 
-  name            = random_id.backend_service[each.key].hex
+  name    = random_id.backend_service[each.key].hex
+  project = var.project_id
+
   security_policy = each.value.security_policy
   enable_cdn      = false
 
@@ -161,7 +176,9 @@ resource "random_id" "backend_bucket" {
 resource "google_compute_backend_bucket" "this" {
   for_each = var.buckets_backends
 
-  name        = random_id.backend_bucket[each.key].hex
+  name    = random_id.backend_bucket[each.key].hex
+  project = var.project_id
+
   bucket_name = each.value.bucket_name
   enable_cdn  = each.value.cdn_policy == null ? false : true
 

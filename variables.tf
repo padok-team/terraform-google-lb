@@ -4,6 +4,11 @@ terraform {
   experiments = [module_variable_optional_attrs]
 }
 
+variable "project_id" {
+  description = "The project to deploy the ressources to."
+  type        = string
+}
+
 variable "name" {
   description = "The load balancer name."
   type        = string
