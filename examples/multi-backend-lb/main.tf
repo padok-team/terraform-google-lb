@@ -1,7 +1,7 @@
 # Short description of the use case in comments
 
 provider "google" {
-  project = "padok-cloud-factory"
+  project = "padok-playground"
   region  = "europe-west1"
 }
 
