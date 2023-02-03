@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/padok-team/terraform-google-lb/compare/v1.1.0...v1.2.0) (2023-02-03)
+
+
+### Features
+
+* **all:** add project variable to module ([3e6fd99](https://github.com/padok-team/terraform-google-lb/commit/3e6fd991f6b5f07246b96f5d42a3bcd5b1ea4eaa))
+* update example ([8a788b7](https://github.com/padok-team/terraform-google-lb/commit/8a788b7c1d4ca7fbaa713a145a3dc16cc02584f6))
+
 ## [Unreleased](https://github.com/padok-team/terraform-google-lb/tree/HEAD)
 
 [Full Changelog](https://github.com/padok-team/terraform-google-lb/compare/v1.0.0...HEAD)
