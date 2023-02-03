@@ -1,18 +1,26 @@
 # Short description of the use case in comments
 
-provider "google" {
-  project = "padok-cloud-factory"
-  region  = "europe-west1"
+locals {
+  project_id = "padok-cloud-factory"
 }
 
-data "google_compute_ssl_certificate" "playground" {
-  name = "playground-tls"
+provider "google" {
+  region = "europe-west1"
+}
+
+resource "google_compute_managed_ssl_certificate" "this" {
+  name    = "playground-tls"
+  project = local.project_id
+  managed {
+    domains = ["frontend-library.playground.padok.cloud", "www.frontend-library.playground.padok.cloud"]
+  }
 }
 
 module "multi_backend_lb" {
   source = "../.."
 
-  name = "lb-library"
+  name       = "lb-library"
+  project_id = local.project_id
 
   buckets_backends = {
     frontend = {
@@ -22,7 +30,7 @@ module "multi_backend_lb" {
           paths = ["/*"]
         }
       ]
-      bucket_name = "padok-helm-library"
+      bucket_name = google_storage_bucket.this.name
     }
   }
   service_backends = {
@@ -36,12 +44,14 @@ module "multi_backend_lb" {
       groups = [google_compute_region_network_endpoint_group.backend.id]
     }
   }
-  ssl_certificates    = [data.google_compute_ssl_certificate.playground.self_link]
+  ssl_certificates    = [google_compute_managed_ssl_certificate.this.id]
   custom_cdn_policies = {}
 }
 
 resource "google_compute_region_network_endpoint_group" "backend" {
-  name                  = "network-backend"
+  name    = "network-backend"
+  project = local.project_id
+
   region                = "europe-west1"
   network_endpoint_type = "SERVERLESS"
   cloud_run {
@@ -49,3 +59,13 @@ resource "google_compute_region_network_endpoint_group" "backend" {
   }
 }
 
+resource "google_storage_bucket" "this" {
+  name     = "example-custom-certificate"
+  project  = local.project_id
+  location = "EU"
+
+  website {
+    main_page_suffix = "index.html"
+    not_found_page   = "index.html"
+  }
+}

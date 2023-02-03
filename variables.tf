@@ -1,7 +1,6 @@
-terraform {
-  # Optional attributes and the defaults function are
-  # both experimental, so we must opt in to the experiment.
-  experiments = [module_variable_optional_attrs]
+variable "project_id" {
+  description = "The project to deploy the ressources to."
+  type        = string
 }
 
 variable "name" {
@@ -28,11 +27,6 @@ variable "ssl_certificates" {
   description = "A list of SSL certificates for the load balancer."
   type        = list(string)
   default     = []
-
-  validation {
-    condition     = length(var.ssl_certificates) > 0
-    error_message = "The ssl_certificates variable must contain at least 1 certificate."
-  }
 }
 
 variable "buckets_backends" {
@@ -62,17 +56,17 @@ variable "service_backends" {
 variable "custom_cdn_policies" {
   description = "A map of additional custom CDN policies you can add to the load balancer."
   type = map(object({
-    cache_mode       = optional(string)
-    client_ttl       = optional(number)
-    default_ttl      = optional(number)
-    max_ttl          = optional(number)
-    negative_caching = optional(bool)
+    cache_mode       = optional(string, null)
+    client_ttl       = optional(number, null)
+    default_ttl      = optional(number, null)
+    max_ttl          = optional(number, null)
+    negative_caching = optional(bool, null)
     negative_caching_policy = optional(map(object({
-      code = optional(number)
-      ttl  = optional(number)
-    })))
-    serve_while_stale            = optional(number)
-    signed_url_cache_max_age_sec = optional(number)
+      code = optional(number, null)
+      ttl  = optional(number, null)
+    })), null)
+    serve_while_stale            = optional(number, null)
+    signed_url_cache_max_age_sec = optional(number, null)
   }))
   default = {}
 }

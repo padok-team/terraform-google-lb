@@ -1,18 +1,29 @@
 # Short description of the use case in comments
-
 provider "google" {
-  project = "padok-cloud-factory"
-  region  = "europe-west1"
+  region = "europe-west1"
 }
 
-data "google_compute_ssl_certificate" "playground" {
-  name = "playground-tls"
+locals {
+  domain_name = "googlelb.padok.cloud"
+  project_id  = "padok-cloud-factory"
+}
+
+# --- Generate Certificate --- #
+resource "google_compute_managed_ssl_certificate" "this" {
+  project = local.project_id
+
+  name = replace(local.domain_name, ".", "-")
+  managed {
+    domains = [local.domain_name]
+  }
 }
 
 module "custom_cdn_policy_lb" {
   source = "../.."
 
-  name = "lb-library"
+  name       = "lb-library"
+  project_id = local.project_id
+
   buckets_backends = {
     frontend = {
       hosts = ["frontend-library.playground.padok.cloud"]
@@ -36,7 +47,7 @@ module "custom_cdn_policy_lb" {
       groups = [google_compute_region_network_endpoint_group.backend.id]
     }
   }
-  ssl_certificates = [data.google_compute_ssl_certificate.playground.self_link]
+  ssl_certificates = [google_compute_managed_ssl_certificate.this.id]
   custom_cdn_policies = {
     custom_react = {
       cache_mode       = "USE_ORIGIN_HEADERS"
@@ -57,6 +68,7 @@ module "custom_cdn_policy_lb" {
 
 resource "google_compute_region_network_endpoint_group" "backend" {
   name                  = "network-backend"
+  project               = local.project_id
   region                = "europe-west1"
   network_endpoint_type = "SERVERLESS"
   cloud_run {
