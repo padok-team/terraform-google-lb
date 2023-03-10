@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/padok-team/terraform-google-lb/compare/v1.2.0...v1.3.0) (2023-03-10)
+
+
+### Features
+
+* handle edge security policy in buckets for cloud armor rules ([551a7ea](https://github.com/padok-team/terraform-google-lb/commit/551a7eae543460aabb54032f836d3c2f16af8747))
+
+
+### Bug Fixes
+
+* add var input ([8138014](https://github.com/padok-team/terraform-google-lb/commit/813801436c2f85379abcae6f63016ec5a4ff3e98))
+
 ## [1.2.0](https://github.com/padok-team/terraform-google-lb/compare/v1.1.0...v1.2.0) (2023-02-03)
 
 
