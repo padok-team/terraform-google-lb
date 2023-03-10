@@ -88,7 +88,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_buckets_backends"></a> [buckets\_backends](#input\_buckets\_backends) | A map of buckets to add as the load balancer backends. | <pre>map(object({<br>    hosts       = list(string)<br>    bucket_name = string<br>    cdn_policy  = optional(string)<br>    path_rules = list(object({<br>      paths = list(string)<br>    }))<br>  }))</pre> | n/a | yes |
+| <a name="input_buckets_backends"></a> [buckets\_backends](#input\_buckets\_backends) | A map of buckets to add as the load balancer backends. | <pre>map(object({<br>    hosts       = list(string)<br>    bucket_name = string<br>    cdn_policy  = optional(string)<br>    path_rules = list(object({<br>      paths = list(string)<br>    }))<br>    security_policy = optional(string)<br>  }))</pre> | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | The load balancer name. | `string` | n/a | yes |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | The project to deploy the ressources to. | `string` | n/a | yes |
 | <a name="input_service_backends"></a> [service\_backends](#input\_service\_backends) | A map of services to add as the load balancer backends. | <pre>map(object({<br>    hosts  = list(string)<br>    groups = list(string)<br>    path_rules = list(object({<br>      paths = list(string)<br>    }))<br>    security_policy = optional(string)<br>  }))</pre> | n/a | yes |

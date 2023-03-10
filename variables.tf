@@ -38,6 +38,7 @@ variable "buckets_backends" {
     path_rules = list(object({
       paths = list(string)
     }))
+    security_policy = optional(string)
   }))
 }
 
