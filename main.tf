@@ -179,6 +179,8 @@ resource "google_compute_backend_bucket" "this" {
   name    = random_id.backend_bucket[each.key].hex
   project = var.project_id
 
+  edge_security_policy = each.value.security_policy
+
   bucket_name = each.value.bucket_name
   enable_cdn  = each.value.cdn_policy == null ? false : true
 
