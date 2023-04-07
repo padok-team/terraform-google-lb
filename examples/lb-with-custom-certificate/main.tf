@@ -44,6 +44,7 @@ resource "google_storage_bucket" "this" {
   project  = local.project_id
   location = "EU"
   #checkov:skip=CKV_GCP_62: Example, no connexion logging required
+  #checkov:skip=CKV_GCP_78: Example, no versioning required
 
   public_access_prevention = "enforced"
 
