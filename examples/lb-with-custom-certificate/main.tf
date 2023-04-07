@@ -43,6 +43,9 @@ resource "google_storage_bucket" "this" {
   name     = "example-custom-certificate"
   project  = local.project_id
   location = "EU"
+  #checkov:skip=CKV_GCP_62: Example, no connexion logging required
+
+  public_access_prevention = "enforced"
 
   website {
     main_page_suffix = "index.html"
