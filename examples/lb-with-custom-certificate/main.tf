@@ -46,8 +46,8 @@ resource "google_storage_bucket" "this" {
   #checkov:skip=CKV_GCP_62: Example, no connexion logging required
   #checkov:skip=CKV_GCP_78: Example, no versioning required
 
-  public_access_prevention = "enforced"
-
+  public_access_prevention    = "enforced"
+  uniform_bucket_level_access = true
   website {
     main_page_suffix = "index.html"
     not_found_page   = "index.html"
