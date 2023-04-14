@@ -43,7 +43,7 @@ variable "buckets_backends" {
 }
 
 variable "service_backends" {
-  description = "A map of services to add as the load balancer backends."
+  description = "A map of services to add as the load balancer backends. "
   type = map(object({
     hosts  = list(string)
     groups = list(string)
