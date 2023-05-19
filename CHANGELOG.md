@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/padok-team/terraform-google-lb/compare/v1.3.0...v1.4.0) (2023-05-19)
+
+
+### Miscellaneous Chores
+
+* release 1.4.0 ([19e0caf](https://github.com/padok-team/terraform-google-lb/commit/19e0cafb53b506e74b344da71b9171a88c356823))
+
 ## [1.3.0](https://github.com/padok-team/terraform-google-lb/compare/v1.2.0...v1.3.0) (2023-03-10)
 
 
