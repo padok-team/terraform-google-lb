@@ -9,7 +9,7 @@ resource "google_compute_url_map" "https" {
   name    = "${var.name}-https"
   project = var.project_id
 
-  default_service = try(google_compute_backend_bucket.this[keys(google_compute_backend_bucket.this)[0]].self_link, google_compute_backend_service.this[keys(google_compute_backend_service.this)[0]].self_link)
+  default_service = try(google_compute_backend_bucket.this[keys(google_compute_backend_bucket.this)[0]].self_link, google_compute_backend_service.this[keys(google_compute_backend_service.this)[0]].self_link, var.default_service_self_link)
 
   dynamic "host_rule" {
     for_each = var.service_backends
@@ -60,6 +60,32 @@ resource "google_compute_url_map" "https" {
       }
     }
   }
+
+  # Allow More advance rules
+  dynamic "host_rule" {
+    for_each = var.advance_hosts_rules
+
+    content {
+      hosts        = host_rule.value.hosts
+      path_matcher = host_rule.key
+    }
+  }
+
+  dynamic "path_matcher" {
+    for_each = var.advance_hosts_rules
+    content {
+      name            = path_matcher.key
+      default_service = path_matcher.value.default_service_id
+      dynamic "path_rule" {
+        for_each = path_matcher.value.path_rules != null ? path_matcher.value.path_rules : []
+        content {
+          paths   = path_rule.value.paths
+          service = path_rule.value.service_id
+        }
+      }
+    }
+  }
+
 }
 
 resource "google_compute_url_map" "http" {
@@ -88,6 +114,7 @@ resource "google_compute_target_https_proxy" "this" {
   url_map          = google_compute_url_map.https.self_link
   ssl_certificates = var.ssl_certificates
   ssl_policy       = google_compute_ssl_policy.this.self_link
+  certificate_map  = var.certificate_map_id
 }
 
 resource "google_compute_target_http_proxy" "this" {
