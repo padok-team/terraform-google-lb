@@ -15,9 +15,13 @@ Terraform module which creates **Load Balancer** resources on **GCP**.
 
 ## Usage
 
+### Backend Oriented
+
+This pattern will create the backend associated the buckets and cloud run / compute. It does not allow more complex pattern (like same hosts serving a cloud run and a bucket).
+
 ```hcl
 module "my_lb" {
-  source = "git@github.com:padok-team/terraform-google-lb.git?ref=v1.0.1"
+  source = "git@github.com:padok-team/terraform-google-lb.git?ref=v2.0.0"
 
   name = "my-lb"
   buckets_backends = {
@@ -43,6 +47,44 @@ module "my_lb" {
       groups = [google_compute_region_network_endpoint_group.backend.id]
     }
   }
+  ssl_certificates    = [data.google_compute_ssl_certificate.playground.self_link]
+  custom_cdn_policies = {}
+}
+```
+
+### Host and Path oriented
+
+This pattern does not create the backend neither the cdn policies associated.
+
+```hcl
+module "my_lb" {
+  source = "git@github.com:padok-team/terraform-google-lb.git?ref=v2.0.0"
+
+  name = "my-lb"
+
+  default_service_self_link = data.google_compute_backend_bucket.playground.id
+
+  advance_hosts_rules = {
+    echo-playground = {
+      hosts = ["echo.playground.padok.cloud"]
+      default_service_id = data.google_compute_backend_bucket.playground_echo.id
+      path_rules = [
+        {
+          paths = [/api/*]
+          service_id = data.google_compute_backend_service.playground_echo.id
+        },
+        {
+          paths = [/*]
+          service_id = data.google_compute_backend_bucket.playground_echo.id
+        },
+      ]
+    }
+    beta-playground = {
+      hosts = ["beta.playground.padok.cloud"]
+      default_service_id = data.google_compute_backend_service.playground_beta.id
+    }
+  }
+
   ssl_certificates    = [data.google_compute_ssl_certificate.playground.self_link]
   custom_cdn_policies = {}
 }
@@ -78,6 +120,8 @@ Alternatively, you can set custom CDN Policies as explained in the [Terraform do
 - [Multiple backend usage](examples/multi-backend-lb/main.tf)
 - [Custom CDN policy usage](examples/custom-cdn-policy/main.tf)
 - [Custom certificate usage](examples/lb-with-custom-certificate/main.tf)
+- [Certificate Map usage](examples/certificate-map-usage/main.tf)
+- [Advance Hosts rules usage](examples/lb-advance-hosts-rules/main.tf)
 
 <!-- BEGIN_TF_DOCS -->
 ## Modules

@@ -51,6 +51,7 @@ variable "buckets_backends" {
     }))
     security_policy = optional(string)
   }))
+  default = {}
 }
 
 variable "service_backends" {
@@ -63,6 +64,7 @@ variable "service_backends" {
     }))
     security_policy = optional(string)
   }))
+  default = {}
 }
 
 variable "custom_cdn_policies" {
@@ -99,4 +101,5 @@ variable "advance_hosts_rules" {
       service_id = string       # Service id that will service those paths
     })))
   }))
+  default = {}
 }
