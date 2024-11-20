@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/padok-team/terraform-google-lb/compare/v1.4.0...v1.4.1) (2024-11-15)
+
+
+### Bug Fixes
+
+* add renovate.json with padok default config ([26006a3](https://github.com/padok-team/terraform-google-lb/commit/26006a34a94a9fb75fe3e4d745539a1bb2922c0d))
+
 ## [1.4.0](https://github.com/padok-team/terraform-google-lb/compare/v1.3.0...v1.4.0) (2023-05-19)
 
 
